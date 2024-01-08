@@ -1,0 +1,124 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE "account" (
+  "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "name" VARCHAR(3),
+  "detail" VARCHAR(255)
+);
+
+CREATE TABLE "city" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "name" VARCHAR(45)
+);
+
+CREATE TABLE "country" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "name" VARCHAR(45),
+  FOREIGN KEY ("id")
+    REFERENCES "city"("id")
+);
+
+CREATE TABLE "concept" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "name" VARCHAR(35)
+);
+
+CREATE TABLE "cost_center" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "detail" VARCHAR(7)
+);
+
+CREATE TABLE "currency" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "detail" VARCHAR(25)
+);
+
+CREATE TABLE "id_type" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "description" VARCHAR(10)
+);
+
+CREATE TABLE "pay_method" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "detail" VARCHAR(2)
+);
+
+CREATE TABLE "role" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "description" VARCHAR(40)
+);
+
+CREATE TABLE "status" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "detail" VARCHAR(8)
+);
+
+CREATE TABLE "approval" (
+  "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "detail" VARCHAR(50),
+  "expenses_id" VARCHAR(10),
+  "employee_id_number" VARCHAR(10)
+);
+
+CREATE TABLE "employee" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id_type" VARCHAR(2),
+  "first_name" VARCHAR(10),
+  "second_name" VARCHAR(10),
+  "first_last_name" VARCHAR(10),
+  "second_last_name" VARCHAR(10),
+  "born_date" DATE,
+  "email" VARCHAR(60),
+  "phone" VARCHAR(13),
+  "address" VARCHAR(50),
+  "building_name" VARCHAR(20),
+  "neighborhood" VARCHAR(22),
+  "city" VARCHAR(15),
+  "country" VARCHAR(15),
+  "role" VARCHAR(40),
+  "password" VARCHAR(15),
+  "status" INT,
+  "register_date" DATE,
+  "role_id" INT,
+  FOREIGN KEY ("id")
+    REFERENCES "id_type"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "role"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "approval"("id")
+);
+
+CREATE TABLE "expense" (
+  "id"  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "expense_date" DATE,
+  "identification" VARCHAR(10),
+  "register_date" DATE,
+  "item" INT,
+  "concept" VARCHAR(20),
+  "pay_method_id" INT,
+  "detail" VARCHAR(100),
+  "value" DOUBLE PRECISION,
+  "total" DOUBLE PRECISION,
+  "status" VARCHAR(10),
+  "cost_center_id" INT,
+  "concept_id" INT,
+  "account_id" INT,
+  "country_id" INT,
+  "currency_id" INT,
+  FOREIGN KEY ("id")
+    REFERENCES "pay_method"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "account"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "country"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "concept"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "cost_center"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "currency"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "status"("id"),
+  FOREIGN KEY ("id")
+    REFERENCES "approval"("id")
+);
